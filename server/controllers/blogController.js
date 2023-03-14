@@ -1,25 +1,42 @@
 //Connect to Database
 const slugify = require("slugify");
 const Blogs = require("../models/blogs");
+const { v4: uuidv4 } = require("uuid");
 
 //add data
 exports.create = (req, res) => {
   const { title, content, author } = req.body;
-  const slug = slugify(title);
+  let slug = slugify(title);
 
+  if (!slug) slug = uuidv4();
   //validate data
   switch (true) {
     case !title:
-      return res.status(400).json({ error: "please add title" });
+      return res.status(400).json({ error: "Please add title name!" });
     case !content:
-      return res.status(400).json({ error: "please add content" });
+      return res.status(400).json({ error: "Please add content details!" });
   }
 
   //save data
   Blogs.create({ title, content, author, slug }, (err, blog) => {
     if (err) {
-      res.status(400).json({ error: "have already title" });
+      res.status(400).json({ error: "Have already title name!" });
     }
+    res.json(blog);
+  });
+};
+
+//get data
+exports.getAllBlogs = (req, res) => {
+  Blogs.find({}).exec((err, blogs) => {
+    res.json(blogs);
+  });
+};
+
+//get single data
+exports.singleBlog = (req, res) => {
+  const { slug } = req.params;
+  Blogs.findOne({ slug }).exec((err, blog) => {
     res.json(blog);
   });
 };
