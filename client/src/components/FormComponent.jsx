@@ -15,7 +15,6 @@ const FormComponent = () => {
   };
   const submitForm = (e) => {
     e.preventDefault();
-    console.log("API URL = ", process.env.REACT_APP_API);
     axios
       .post(`${process.env.REACT_APP_API}/create`, { title, content, author })
       .then(() => {

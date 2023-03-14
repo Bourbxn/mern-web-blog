@@ -41,3 +41,28 @@ exports.singleBlog = (req, res) => {
     res.json(blog);
   });
 };
+
+// delete data
+exports.remove = (req, res) => {
+  const { slug } = req.params;
+  Blogs.findOneAndRemove({ slug }).exec((err, blog) => {
+    if (err) console.log(err);
+    res.json({
+      message: "Successfully Deleted!",
+    });
+  });
+};
+
+// update data
+exports.update = (req, res) => {
+  const { slug } = req.params;
+  const { title, content, author } = req.body;
+  Blogs.findOneAndUpdate(
+    { slug },
+    { title, content, author },
+    { new: true }
+  ).exec((err, blog) => {
+    if (err) console.log(err);
+    res.json(blog);
+  });
+};

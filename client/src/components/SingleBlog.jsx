@@ -1,24 +1,32 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import NavBar from "./NavBar";
 
 const SingleBlog = () => {
-  const [blog, setBlog] = useState([]);
-  const params = useParams();
-  const fetchData = () => {
+  const [blog, setBlog] = useState("");
+  const params = new useParams();
+
+  useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API}/blog/${params.slug}`)
       .then((response) => {
         setBlog(response.data);
       })
-      .catch((err) => {
-        alert(err);
-      });
-  };
-  useEffect(() => {
-    fetchData();
+      .catch((err) => alert(err));
+    // eslint-disable-next-line
   }, []);
-  return <div>{JSON.stringify(blog)}</div>;
+  return (
+    <div className="container p-5">
+      <NavBar />
+      <h1>{blog.title}</h1>
+      <p>{blog.content}</p>
+      <p className="text-muted">
+        Author: {blog.author}, Created at{" "}
+        {new Date(blog.createdAt).toLocaleString()}
+      </p>
+    </div>
+  );
 };
 
 export default SingleBlog;

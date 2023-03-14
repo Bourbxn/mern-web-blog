@@ -2,6 +2,7 @@ import NavBar from "./components/NavBar";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -18,6 +19,28 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const confirmDelete = (slug) => {
+    Swal.fire({
+      title: "Are you sure to delete article?",
+      icon: "warning",
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteBlog(slug);
+      }
+    });
+  };
+
+  const deleteBlog = (slug) => {
+    axios
+      .delete(`${process.env.REACT_APP_API}/blog/${slug}`)
+      .then((response) => {
+        Swal.fire("Deleted!", response.data.message, "success");
+        fetchData();
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="container p-5">
@@ -37,6 +60,19 @@ function App() {
               Author: {blog.author}, Created at{" "}
               {new Date(blog.createdAt).toLocaleString()}
             </p>
+            <Link
+              className="btn btn-outline-success"
+              to={`/blog/edit/${blog.slug}`}
+            >
+              Edit
+            </Link>{" "}
+            &nbsp;
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => confirmDelete(blog.slug)}
+            >
+              Delete
+            </button>
           </div>
         </div>
       ))}
