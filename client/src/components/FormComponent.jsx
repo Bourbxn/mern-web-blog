@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 import NavBar from "./NavBar";
 
 const FormComponent = () => {
@@ -13,8 +15,16 @@ const FormComponent = () => {
   };
   const submitForm = (e) => {
     e.preventDefault();
-    //console.table({ title, content, author });
     console.log("API URL = ", process.env.REACT_APP_API);
+    axios
+      .post(`${process.env.REACT_APP_API}/create`, { title, content, author })
+      .then(() => {
+        Swal.fire("Good job!", "Successfully to add an article!", "success");
+        setState({ ...state, title: "", content: "", author: "" });
+      })
+      .catch((err) => {
+        Swal.fire("Oops...", err.response.data.error, "error");
+      });
   };
   return (
     <div className="container p-5">
