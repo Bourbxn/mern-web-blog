@@ -29,6 +29,7 @@ exports.create = (req, res) => {
 //get data
 exports.getAllBlogs = (req, res) => {
   Blogs.find({}).exec((err, blogs) => {
+    console.log("get all");
     res.json(blogs);
   });
 };

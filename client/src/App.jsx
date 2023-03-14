@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-
   const fetchData = () => {
     axios
       .get(`${process.env.REACT_APP_API}/blogs`)
@@ -19,6 +18,7 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <div className="container p-5">
       <NavBar />
