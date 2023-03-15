@@ -3,23 +3,30 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import NavBar from "./NavBar";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditBlog = () => {
   const [state, setState] = useState({
     title: "",
-    content: "",
     author: "",
     slug: "",
   });
-  const { title, content, author, slug } = state;
+  const { title, author, slug } = state;
+  const [content, setContent] = useState("");
   const params = useParams();
+
+  const submitContent = (event) => {
+    setContent(event);
+  };
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API}/blog/${params.slug}`)
       .then((response) => {
         const { title, content, author, slug } = response.data;
-        setState({ ...state, title, content, author, slug });
+        setState({ ...state, title, author, slug });
+        setContent(content);
       })
       .catch((err) => alert(err));
     // eslint-disable-next-line
@@ -38,11 +45,13 @@ const EditBlog = () => {
       </div>
       <div className="form-group">
         <label>Content</label>
-        <textarea
-          className="form-control"
+        <ReactQuill
           value={content}
-          onChange={inputValue("content")}
-        ></textarea>
+          onChange={submitContent}
+          theme="snow"
+          className="pb-5 mb-3"
+          style={{ border: "1px solid #666" }}
+        />
       </div>
       <div className="form-group">
         <label>Author</label>
@@ -73,7 +82,8 @@ const EditBlog = () => {
       .then((response) => {
         Swal.fire("Good job!", "Successfully to edit an article!", "success");
         const { title, content, author, slug } = response.data;
-        setState({ ...state, title, author, content, slug });
+        setState({ ...state, title, author, slug });
+        setContent(content);
       })
       .catch((err) => {
         Swal.fire("Oops...", err.response.data.error, "error");
