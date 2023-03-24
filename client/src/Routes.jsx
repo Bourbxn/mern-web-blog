@@ -5,15 +5,30 @@ import EditBlog from "./components/EditBlog";
 import FormComponent from "./components/FormComponent";
 import Login from "./components/Login";
 import SingleBlog from "./components/SingleBlog";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Routes = () => {
   return (
     <BrowserRouter>
       <Browser>
         <Route path="/" element={<App />} />
-        <Route path="/create" element={<FormComponent />} />
+        <Route
+          path="/create"
+          element={
+            <ProtectedRoute>
+              <FormComponent />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/blog/:slug" element={<SingleBlog />} />
-        <Route path="/blog/edit/:slug" element={<EditBlog />} />
+        <Route
+          path="/blog/edit/:slug"
+          element={
+            <ProtectedRoute>
+              <EditBlog />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
       </Browser>
     </BrowserRouter>

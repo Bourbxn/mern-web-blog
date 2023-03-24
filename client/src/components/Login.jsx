@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { authenticate, getUser } from "../services/authorize";
 import NavBar from "./NavBar";
 
 const Login = () => {
@@ -12,17 +14,23 @@ const Login = () => {
   const inputValue = (name) => (event) => {
     setState({ ...state, [name]: event.target.value });
   };
+  const navigate = useNavigate();
   const submitForm = (e) => {
     e.preventDefault();
     axios
       .post(`${process.env.REACT_APP_API}/login`, { username, password })
       .then((response) => {
-        console.log(response);
+        authenticate(response, () => {
+          navigate("/create");
+        });
       })
       .catch((err) => {
         Swal.fire("Oops...", err.response.data.error, "error");
       });
   };
+  useEffect(() => {
+    getUser() && navigate("/");
+  }, []);
   return (
     <div className="container p-5">
       <NavBar />
