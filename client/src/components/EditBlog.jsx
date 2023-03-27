@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import NavBar from "./NavBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { getToken } from "../services/authorize";
 
 const EditBlog = () => {
   const [state, setState] = useState({
@@ -74,11 +75,19 @@ const EditBlog = () => {
   const submitForm = (e) => {
     e.preventDefault();
     axios
-      .put(`${process.env.REACT_APP_API}/blog/${slug}`, {
-        title,
-        content,
-        author,
-      })
+      .put(
+        `${process.env.REACT_APP_API}/blog/${slug}`,
+        {
+          title,
+          content,
+          author,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${getToken()}`,
+          },
+        }
+      )
       .then((response) => {
         Swal.fire("Good job!", "Successfully to edit an article!", "success");
         const { title, content, author, slug } = response.data;

@@ -30,6 +30,14 @@ const Routes = () => {
           }
         />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute redirectPath="/">
+              <App />
+            </ProtectedRoute>
+          }
+        />
       </Browser>
     </BrowserRouter>
   );

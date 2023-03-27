@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { getUser } from "./services/authorize";
+import { getToken, getUser } from "./services/authorize";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -32,10 +32,13 @@ function App() {
       }
     });
   };
-
   const deleteBlog = (slug) => {
     axios
-      .delete(`${process.env.REACT_APP_API}/blog/${slug}`)
+      .delete(`${process.env.REACT_APP_API}/blog/${slug}`, {
+        headers: {
+          authorization: `Bearer ${getToken()}`,
+        },
+      })
       .then((response) => {
         Swal.fire("Deleted!", response.data.message, "success");
         fetchData();

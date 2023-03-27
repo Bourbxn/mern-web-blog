@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import NavBar from "./NavBar";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { getUser } from "../services/authorize";
+import { getToken, getUser } from "../services/authorize";
 
 const FormComponent = () => {
   const [state, setState] = useState({
@@ -27,7 +27,15 @@ const FormComponent = () => {
   const submitForm = (e) => {
     e.preventDefault();
     axios
-      .post(`${process.env.REACT_APP_API}/create`, { title, content, author })
+      .post(
+        `${process.env.REACT_APP_API}/create`,
+        { title, content, author },
+        {
+          headers: {
+            authorization: `Bearer ${getToken()}`,
+          },
+        }
+      )
       .then(() => {
         Swal.fire("Good job!", "Successfully to add an article!", "success");
         setState({ ...state, title: "", author: "" });
